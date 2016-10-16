@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xe
 
 SOURCE_DIR=""
 NAME=""
@@ -17,7 +17,7 @@ param_parse()
 		case "$1" in
 			-s|--src)
 				if [ "$2" != "" ] && [ "${2:0:1}" != "-" ];then
-					SOURCE_DIR=${"$2"//\'/}
+					SOURCE_DIR=$2
 				fi
 				shift
 				;;
@@ -26,13 +26,13 @@ param_parse()
 				;;
 			-n|--name)
 				if [ "$2" != "" ] && [ "${2:0:1}" != "-" ];then
-					NAME=${"$2"//\'/}
+					NAME=$2
 				fi
 				shift
 				;;
 			-b|--build)
 				if [ "$2" != "" ] && [ "${2:0:1}" != "-" ];then
-					BUILD=${"$2"//\'/}
+					BUILD=$2
 				fi
 				shift
 				;;
@@ -126,7 +126,7 @@ rpmdev-setuptree
 python setup.py sdist --dist-dir $HOME/rpmbuild/SOURCES
 
 SPEC_PATH=$(find "$BUILD" -name "*.spec")
-if [ "$SPECS" = "" ]; then
+if [ "$SPEC_PATH" = "" ]; then
 	echo "not have spec file!"
 	exit 0
 fi
