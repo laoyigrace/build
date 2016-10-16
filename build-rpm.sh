@@ -126,10 +126,6 @@ rpmdev-setuptree
 # Create the tarball into the SOURCES directory
 python setup.py sdist --dist-dir $HOME/rpmbuild/SOURCES
 
-VERSION=$(cat setup.cfg | grep version | grep -o '[0-9.]*')
-num=`git log | grep "commit [0-9A-Za-z].*" | wc`
-let num=$num-1
-dev="dev$num"
 
 SPEC_PATH=$(find "$BUILD" -name "*.spec")
 if [ "$SPEC_PATH" = "" ]; then
@@ -147,9 +143,13 @@ rm -f $HOME/rpmbuild/SOURCES/%{SPEC_NAME}
 
 # Get the version from sources
 VERSION=$(cat setup.cfg | grep version | grep -o '[0-9.]*')
+num=`git log | grep "commit [0-9A-Za-z].*" | wc -l`
+let num=$num-1
+dev="dev$num"
+VERSION="${VERSION}.${dev}"
 
 release
 
-rpmbuild -ba $HOME/rpmbuild/SPECS/${SPEC_NAME} -D "milestone $dev"
+rpmbuild -ba $HOME/rpmbuild/SPECS/${SPEC_NAME}
 
 cp -r $HOME/rpmbuild/RPMS/noarch/*.rpm $TARGET_DIR
