@@ -127,7 +127,7 @@ python setup.py sdist --dist-dir $HOME/rpmbuild/SOURCES
 
 SPEC_PATH=$(find "$BUILD" -name "*.spec")
 if [ "$SPEC_PATH" = "" ]; then
-	echo "not have spec file!"
+	echo "not have spec file !"
 	exit 0
 fi
 
