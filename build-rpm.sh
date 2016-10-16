@@ -103,8 +103,9 @@ function rc {
 
 function release {
     # Replace the spec file with the given snapshot value
-    sed -ie "s/Version:\s\+XXX/Version:        ${VERSION}/" $HOME/rpmbuild/SPECS/${SPEC_NAME}
-    sed -ie "s/Release:\s\+XXX/Release:        1/" $HOME/rpmbuild/SPECS/${SPEC_NAME}
+    sed -ie "s/Version:\s.*$/Version:        ${VERSION}/" $HOME/rpmbuild/SPECS/${SPEC_NAME}
+    sed -ie "s/Release:\s\.*$/Release:        1/"
+    $HOME/rpmbuild/SPECS/${SPEC_NAME}
     echo "Building ${SPEC_NAME} package for release ${VERSION}"
 }
 
@@ -125,6 +126,7 @@ rpmdev-setuptree
 # Create the tarball into the SOURCES directory
 python setup.py sdist --dist-dir $HOME/rpmbuild/SOURCES
 
+VERSION=$(cat setup.cfg | grep version | grep -o '[0-9.]*')
 num=`git log | grep "commit [0-9A-Za-z].*" | wc`
 let num=$num-1
 dev="dev$num"
