@@ -104,8 +104,7 @@ function rc {
 function release {
     # Replace the spec file with the given snapshot value
     sed -ie "s/Version:\s.*$/Version:        ${VERSION}/" $HOME/rpmbuild/SPECS/${SPEC_NAME}
-    sed -ie "s/Release:\s\.*$/Release:        1/"
-    $HOME/rpmbuild/SPECS/${SPEC_NAME}
+    sed -ie "s/Release:\s\.*$/Release:        1/" $HOME/rpmbuild/SPECS/${SPEC_NAME}
     echo "Building ${SPEC_NAME} package for release ${VERSION}"
 }
 
