@@ -149,6 +149,6 @@ VERSION="${VERSION}.${dev}"
 
 release
 
-rpmbuild -ba $HOME/rpmbuild/SPECS/${SPEC_NAME}
+rpmbuild -ba --nodeps $HOME/rpmbuild/SPECS/${SPEC_NAME}
 
 cp -r $HOME/rpmbuild/RPMS/noarch/*.rpm $TARGET_DIR
