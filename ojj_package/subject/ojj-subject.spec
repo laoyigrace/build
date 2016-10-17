@@ -164,6 +164,20 @@ BuildRequires:    pyxattr
 BuildRequires:    python-pep8
 # Required to compile translation files
 BuildRequires:    python-babel
+BuildRequires:    python-httplib2
+BuildRequires:    python-cursive
+BuildRequires:    python-osprofiler
+BuildRequires:    python-paste
+BuildRequires:    python-oslo-policy
+BuildRequires:    python-oslo-middleware
+BuildRequires:    python-paste-deploy
+BuildRequires:    python-routes
+BuildRequires:    python-taskflow
+BuildRequires:    python-futurist
+BuildRequires:    python-wsme
+BuildRequires:    python-crypto
+BuildRequires:    python-oslo-messaging
+
 
 %description      doc
 OpenStack Subject Service (code-named Glance) provides discovery, registration,
@@ -195,6 +209,9 @@ rm -rf {test-,}requirements.txt tools/{pip,test}-requires
 
 %build
 PYTHONPATH=. oslo-config-generator --config-dir=etc/oslo-config-generator/
+find . \( -name .gitignore -o -name .placeholder \) -delete
+find . -name "*.pyc" | xargs rm -f
+find . -name "*.pyo" | xargs rm -f
 
 # Build
 %{__python2} setup.py build
@@ -262,7 +279,6 @@ install -d -m 755 %{buildroot}%{_localstatedir}/log/subject
 install -d -m 755 %{buildroot}%{_datadir}
 rm -f %{buildroot}%{python2_sitelib}/%{service}/locale/*/LC_*/%{service}*po
 rm -f %{buildroot}%{python2_sitelib}/%{service}/locale/*pot
-mv %{buildroot}%{python2_sitelib}/%{service}/locale %{buildroot}%{_datadir}/locale
 
 # Find language files
 #%find_lang %{service} --all-name
@@ -342,14 +358,14 @@ exit 0
 %dir %attr(0750, subject, subject) %{_localstatedir}/log/subject
 
 #%files -n python-subject -f %{service}.lang
-#%doc README.rst
-#%{python2_sitelib}/subject
-#%{python2_sitelib}/subject-*.egg-info
-#%exclude %{python2_sitelib}/subject/tests
+%doc README.rst
+%{python2_sitelib}/subject
+%{python2_sitelib}/subject-*.egg-info
+%exclude %{python2_sitelib}/subject/tests
 
 #%files -n python-%{service}-tests
-#%license LICENSE
-#%{python2_sitelib}/%{service}/tests
+%license LICENSE
+%{python2_sitelib}/%{service}/tests
 
 #%if 0%{?with_doc}
 #%files doc
