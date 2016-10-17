@@ -200,18 +200,12 @@ PYTHONPATH=. oslo-config-generator --config-dir=etc/oslo-config-generator/
 %{__python2} setup.py build
 
 # Generate i18n files
-%{__python2} setup.py compile_catalog -d build/lib/%{service}/locale
+#%{__python2} setup.py compile_catalog -d build/lib/%{service}/locale
 
 %install
 %{__python2} setup.py install -O1 --skip-build --root %{buildroot}
 
 export PYTHONPATH="$( pwd ):$PYTHONPATH"
-%if 0%{?with_doc}
-%{__python2} setup.py build_sphinx
-%{__python2} setup.py build_sphinx --builder man
-mkdir -p %{buildroot}%{_mandir}/man1
-install -p -D -m 644 doc/build/man/*.1 %{buildroot}%{_mandir}/man1/
-%endif
 
 # Fix hidden-file-or-dir warnings
 %if 0%{?with_doc}
@@ -271,7 +265,7 @@ rm -f %{buildroot}%{python2_sitelib}/%{service}/locale/*pot
 mv %{buildroot}%{python2_sitelib}/%{service}/locale %{buildroot}%{_datadir}/locale
 
 # Find language files
-%find_lang %{service} --all-name
+#%find_lang %{service} --all-name
 
 # Cleanup
 rm -rf %{buildroot}%{_prefix}%{_sysconfdir}
@@ -331,9 +325,9 @@ exit 0
 %{_unitdir}/ojj-subject-registry.service
 #%{_unitdir}/ojj-subject-scrubber.service
 
-%if 0%{?with_doc}
-%{_mandir}/man1/subject*.1.gz
-%endif
+#%if 0%{?with_doc}
+#%{_mandir}/man1/subject*.1.gz
+#%endif
 %dir %{_sysconfdir}/subject
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-api.conf
 #%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-glare.conf
@@ -341,26 +335,26 @@ exit 0
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-registry.conf
 #%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-scrubber.conf
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/policy.json
-%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/schema-image.json
+#%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/schema-image.json
 #%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/metadefs/*.json
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/logrotate.d/ojj-subject
 %dir %attr(0755, subject, nobody) %{_sharedstatedir}/subject
 %dir %attr(0750, subject, subject) %{_localstatedir}/log/subject
 
-%files -n python-subject -f %{service}.lang
-%doc README.rst
-%{python2_sitelib}/subject
-%{python2_sitelib}/subject-*.egg-info
-%exclude %{python2_sitelib}/subject/tests
+#%files -n python-subject -f %{service}.lang
+#%doc README.rst
+#%{python2_sitelib}/subject
+#%{python2_sitelib}/subject-*.egg-info
+#%exclude %{python2_sitelib}/subject/tests
 
-%files -n python-%{service}-tests
-%license LICENSE
-%{python2_sitelib}/%{service}/tests
+#%files -n python-%{service}-tests
+#%license LICENSE
+#%{python2_sitelib}/%{service}/tests
 
-%if 0%{?with_doc}
-%files doc
-%doc doc/build/html
-%endif
+#%if 0%{?with_doc}
+#%files doc
+#%doc doc/build/html
+#%endif
 
 %changelog
 * Thu Oct 06 2016 Haikel Guemar <hguemar@fedoraproject.org> 1:13.0.0-1
