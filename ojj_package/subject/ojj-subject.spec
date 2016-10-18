@@ -294,7 +294,7 @@ exit 0
 %dir %attr(0755, subject, nobody) %{_sharedstatedir}/subject
 %dir %attr(0750, subject, subject) %{_localstatedir}/log/subject
 
-%files -n python-subject -f %{service}.lang
+%files -n python-subject
 %doc README.rst
 %{python2_sitelib}/subject
 %{python2_sitelib}/subject-*.egg-info
