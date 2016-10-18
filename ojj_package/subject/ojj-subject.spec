@@ -81,7 +81,7 @@ Requires:         python-cryptography >= 1.0
 Requires:         python-debtcollector >= 1.2.0
 Requires:         python-eventlet >= 0.18.2
 Requires:         python-futurist >= 0.11.0
-Requires:         python-subject-store >= 0.18.0
+Requires:         python-subject-store >= 0.1.0
 Requires:         python-httplib2
 Requires:         python-iso8601 >= 0.1.11
 Requires:         python-jsonschema
