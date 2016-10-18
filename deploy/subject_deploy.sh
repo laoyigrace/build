@@ -55,49 +55,6 @@ param_parse()
 	done
 }
 
-system_service()
-{
-    #生成jacket-worker jacket-api.service
-    cat << EOF >/usr/lib/systemd/system/ojj-subject-api.service
-    [Unit]
-    Deacription=Subject API Server
-    After=syslog.target network.target
-
-    [Service]
-    Type=notify
-    NotifyAccess=all
-    TimeoutStartSec=0
-    Restart=always
-    User=subject
-    ExecStart=/usr/bin/subject-api --config-file /etc/subject/subject-api.conf
-
-    [Install]
-    WantedBy=multi-user.target
-EOF
-
-    cat << EOF >/usr/lib/systemd/system/ojj-subject-registry.service
-    [Unit]
-    Deacription=subject registry Server
-    After=syslog.target network.target
-
-    [Service]
-    Type=notify
-    NotifyAccess=all
-    TimeoutStartSec=0
-    Restart=always
-    User=subject
-    ExecStart=/usr/bin/subject-registry --config-file /etc/subject/subject-registry.conf
-
-    [Install]
-    WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
-    systemctl enable ojj-subject-api.service
-    systemctl enable ojj-subject-registry.service
-
-}
-
 conf_init()
 {
     #配置文件的设置
@@ -190,48 +147,8 @@ db_init()
     subject-manage db sync
 }
 
-keystone_install()
-{
-    mysqlcommand="mysql --port=$mysqldbport --password=$mysqldbpassword --user=$mysqldbadm --host=$dbbackendhost"
-    db_keystone="keystone"
-    keystone_user="keystone"
-    keystone_pass="laoyi@19901013"
-    admin_pass="laoyi@19901013"
-    echo "CREATE DATABASE IF NOT EXISTS ${db_keystone} default character set utf8;"|$mysqlcommand
-    echo "GRANT ALL ON $db_keystone.* TO '$keystone_user'@'%' IDENTIFIED BY '$keystone_pass';"|$mysqlcommand
-    echo "GRANT ALL ON $db_keystone.* TO '$keystone_user'@'localhost' IDENTIFIED BY '$keystone_pass';"|$mysqlcommand
-    echo "GRANT ALL ON $db_keystone.* TO '$keystone_user'@'$subjecthost' IDENTIFIED BY '$keystone_pass';"|$mysqlcommand
-
-    yum install -y openstack-keystone httpd mod_wsgi
-
-    crudini --set /etc/keystone/keystone.conf database connection \
-    "mysql+pymysql://${keystone_user}:${keystone_pass}@${dbbackendhost}/${db_keystone}"
-
-    su -s /bin/sh -c "keystone-manage db_sync" keystone
-
-    keystone-manage bootstrap --bootstrap-password ${admin_pass} \
-  --bootstrap-admin-url http://${HOST_IP}:35357/v3/ \
-  --bootstrap-internal-url http://${HOST_IP}:35357/v3/ \
-  --bootstrap-public-url http://${HOST_IP}:5000/v3/ \
-  --bootstrap-region-id RegionOne
-
-    ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
-
-    systemctl enable httpd.service
-    systemctl restart httpd.service
-cat << EOF >/root/keystone_adminrc
-export OS_USERNAME=admin
-export OS_PASSWORD=${admin_pass}
-$ export OS_PROJECT_NAME=admin
-$ export OS_USER_DOMAIN_NAME=Default
-$ export OS_PROJECT_DOMAIN_NAME=Default
-$ export OS_AUTH_URL=http://${HOST_IP}:35357/v3
-$ export OS_IDENTITY_API_VERSION=3
-EOF
-}
 soft_install()
 {
-    echo "show databases;" | mysql || mysql_install
 }
 
 main()
@@ -255,10 +172,6 @@ main()
     mkdir -p /etc/subject
     conf_init
     db_init
-    subject_user_init
-    chown subject:subject "${state_path}" -R
-    chown subject:subject "${log_dir}"
-    system_service
 
     #keystone中设置subject
     keystone user-get $admin_user || keystone user-create --name $admin_user \
