@@ -129,73 +129,11 @@ Requires:         pyxattr
 #python-boto - subject.store.s3
 Requires:         python-boto
 
-%description -n   python-subject
+%description -n python-subject
 Ojj Subject Service (code-named Subject) provides discovery, registration,
 and delivery services for virtual disk images.
 
 This package contains the subject Python library.
-
-%if 0%{?with_doc}
-%package doc
-Summary:          Documentation for OpenStack Subject Service
-
-Requires:         %{name} = %{epoch}:%{version}-%{release}
-
-BuildRequires:    systemd-units
-BuildRequires:    python-sphinx
-BuildRequires:    python-oslo-sphinx
-BuildRequires:    graphviz
-# Required to build module documents
-BuildRequires:    python-boto
-BuildRequires:    python-cryptography >= 1.0
-BuildRequires:    python-keystoneauth1
-BuildRequires:    python-keystonemiddleware >= 4.0.0
-BuildRequires:    python-oslo-concurrency >= 3.5.0
-BuildRequires:    python-oslo-context >= 0.2.0
-BuildRequires:    python-oslo-db >= 4.1.0
-BuildRequires:    python-sqlalchemy >= 1.0.10
-BuildRequires:    python-stevedore
-BuildRequires:    python-webob >= 1.2.3
-# Required for man page building
-BuildRequires:    python-oslotest
-BuildRequires:    python-psutil
-BuildRequires:    python-testresources
-BuildRequires:    pyxattr
-BuildRequires:    python-pep8
-# Required to compile translation files
-BuildRequires:    python-babel
-BuildRequires:    python-httplib2
-BuildRequires:    python-cursive
-BuildRequires:    python-osprofiler
-BuildRequires:    python-paste
-BuildRequires:    python-oslo-policy
-BuildRequires:    python-oslo-middleware
-BuildRequires:    python-paste-deploy
-BuildRequires:    python-routes
-BuildRequires:    python-taskflow
-BuildRequires:    python-futurist
-BuildRequires:    python-wsme
-BuildRequires:    python-crypto
-BuildRequires:    python-oslo-messaging
-
-
-%description      doc
-OpenStack Subject Service (code-named Glance) provides discovery, registration,
-and delivery services for virtual disk images.
-
-This package contains documentation files for subject.
-%endif
-
-%package -n python-%{service}-tests
-Summary:        Glance tests
-Requires:       ojj-%{service} = %{epoch}:%{version}-%{release}
-
-%description -n python-%{service}-tests
-OpenStack Subject Service (code-named Glance) provides discovery, registration,
-and delivery services for virtual disk images.
-
-This package contains the Glance test files.
-
 
 %prep
 %setup -q -n subject-%{upstream_version}
@@ -205,7 +143,6 @@ sed -i '/\/usr\/bin\/env python/d' subject/common/config.py subject/common/crypt
 # Remove the requirements file so that pbr hooks don't add it
 # to distutils requiers_dist config
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires
-
 
 %build
 PYTHONPATH=. oslo-config-generator --config-dir=etc/oslo-config-generator/
@@ -357,7 +294,7 @@ exit 0
 %dir %attr(0755, subject, nobody) %{_sharedstatedir}/subject
 %dir %attr(0750, subject, subject) %{_localstatedir}/log/subject
 
-#%files -n python-subject -f %{service}.lang
+%files -n python-subject -f %{service}.lang
 %doc README.rst
 %{python2_sitelib}/subject
 %{python2_sitelib}/subject-*.egg-info
