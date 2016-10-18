@@ -37,12 +37,16 @@ echo "GRANT ALL ON $db_keystone.* TO '$keystone_user'@'localhost' IDENTIFIED BY 
 echo "GRANT ALL ON $db_keystone.* TO '$keystone_user'@'$subjecthost' IDENTIFIED BY '$keystone_pass';"|$mysqlcommand
 
 yum install -y centos-release-openstack-newton
-yum install -y openstack-keystone httpd mod_wsgi python-keystoneclient
+yum install -y openstack-keystone httpd mod_wsgi python-keystoneclient python-openstackclient
 
 crudini --set /etc/keystone/keystone.conf database connection \
 "mysql+pymysql://${keystone_user}:${keystone_pass}@${dbbackendhost}/${db_keystone}"
+crudini --set /etc/keystone/keystone.conf token provider fernet
 
 su -s /bin/sh -c "keystone-manage db_sync" keystone
+
+keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 
 keystone-manage bootstrap --bootstrap-password ${admin_pass} \
 --bootstrap-admin-url http://${HOST_IP}:35357/v3/ \
@@ -50,6 +54,7 @@ keystone-manage bootstrap --bootstrap-password ${admin_pass} \
 --bootstrap-public-url http://${HOST_IP}:5000/v3/ \
 --bootstrap-region-id RegionOne
 
+echo "ServerName ${HOST_IP}" >>/etc/httpd/conf.d/httpd.conf
 ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
 
 systemctl enable httpd.service
