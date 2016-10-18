@@ -147,10 +147,6 @@ db_init()
     subject-manage db sync
 }
 
-soft_install()
-{
-}
-
 main()
 {
     script_dir=`dirname $0`
@@ -164,7 +160,6 @@ main()
         usage
     fi
 
-    attrs_init
     soft_install
     mkdir -p "${state_path}"
     mkdir -p "${state_path}/subjects"
