@@ -59,7 +59,7 @@ keystone-manage bootstrap --bootstrap-password ${admin_pass} \
 
 cat /etc/httpd/conf.d/httpd.conf | grep "^ServerName" || \
 echo "ServerName ${HOST_IP}" >>/etc/httpd/conf.d/httpd.conf
-ln -sfT /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
+ln -sf /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
 
 systemctl enable httpd.service
 systemctl restart httpd.service
