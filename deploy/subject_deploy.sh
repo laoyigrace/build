@@ -157,11 +157,6 @@ main()
         usage
     fi
 
-    soft_install
-    mkdir -p "${state_path}"
-    mkdir -p "${state_path}/subjects"
-    mkdir -p "${log_dir}"
-    mkdir -p /etc/subject
     conf_init
     db_init
 
