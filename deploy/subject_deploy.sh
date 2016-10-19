@@ -2,6 +2,8 @@
 
 source ./common_var
 
+set -xe
+
 if [ -e /root/adminrc ]; then
     source /root/adminrc
 elif [ -e /root/keystonerc_admin ]; then

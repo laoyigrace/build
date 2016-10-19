@@ -1,6 +1,9 @@
 #!/bin/bash
 
 source ./common_var
+
+set -xe
+
 yum install -y mariadb mariadb-server python2-PyMySQL
 systemctl enable mariadb
 systemctl start mariadb
