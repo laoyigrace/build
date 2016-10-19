@@ -87,6 +87,8 @@ export OS_IMAGE_API_VERSION=2
 export PS1='[\u@\h \W(keystone_demo)]\$ '
 EOF
 
+source /root/keystone_adminrc
+
 # create project service
 openstack project show service || openstack project create --domain default \
   --description "Service Project" service
