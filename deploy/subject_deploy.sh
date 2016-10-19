@@ -55,6 +55,31 @@ param_parse()
 	done
 }
 
+conf_registry_init(){
+   #database
+    crudini --set /etc/subject/subject-registry.conf database connection "mysql+pymysql://${subjectdbuser}:${subjectdbpass}@${dbbackendhost}:${mysqldbport}/${subjectdbname}"
+    crudini --set /etc/subject/subject-registry.conf database retry_interval 10
+    crudini --set /etc/subject/subject-registry.conf database idle_timeout 3600
+    crudini --set /etc/subject/subject-registry.conf database min_pool_size 1
+    crudini --set /etc/subject/subject-registry.conf database max_pool_size 10
+    crudini --set /etc/subject/subject-registry.conf database max_retries 100
+    crudini --set /etc/subject/subject-registry.conf database pool_timeout 10
+
+    # keystone
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken auth_uri "${auth_uri}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken auth_url "${auth_url}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken auth_type "${auth_type}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken project_domain_name "${project_domain_name}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken user_domain_name "${user_domain_name}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken project_name "${service_project_name}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken username "${subject_username}"
+    crudini --set /etc/subject/subject-registry.conf keystone_authtoken password "${subject_password}"
+
+    #compute
+    crudini --set /etc/subject/subject-registry.conf paste_deploy flavor ${flavor}
+
+
+}
 conf_init()
 {
     #配置文件的设置
@@ -71,36 +96,36 @@ conf_init()
     crudini --set /etc/subject/subject-api.conf subject_store filesystem_store_datadir "${filesystem_store_datadir}"
 
     #database
-    crudini --set /etc/subject/subject.conf database connection "mysql+pymysql://${subjectdbuser}:${subjectdbpass}@${dbbackendhost}:${mysqldbport}/${subjectdbname}"
-    crudini --set /etc/subject/subject.conf database retry_interval 10
-    crudini --set /etc/subject/subject.conf database idle_timeout 3600
-    crudini --set /etc/subject/subject.conf database min_pool_size 1
-    crudini --set /etc/subject/subject.conf database max_pool_size 10
-    crudini --set /etc/subject/subject.conf database max_retries 100
-    crudini --set /etc/subject/subject.conf database pool_timeout 10
+    crudini --set /etc/subject/subject-api.conf database connection "mysql+pymysql://${subjectdbuser}:${subjectdbpass}@${dbbackendhost}:${mysqldbport}/${subjectdbname}"
+    crudini --set /etc/subject/subject-api.conf database retry_interval 10
+    crudini --set /etc/subject/subject-api.conf database idle_timeout 3600
+    crudini --set /etc/subject/subject-api.conf database min_pool_size 1
+    crudini --set /etc/subject/subject-api.conf database max_pool_size 10
+    crudini --set /etc/subject/subject-api.conf database max_retries 100
+    crudini --set /etc/subject/subject-api.conf database pool_timeout 10
 
     # keystone
-    crudini --set /etc/subject/subject.conf keystone_authtoken auth_uri "${auth_uri}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken auth_url "${auth_url}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken auth_type "${auth_type}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken project_domain_name "${project_domain_name}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken user_domain_name "${user_domain_name}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken project_name "${project_name}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken username "${username}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken password "${password}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken auth_uri "${auth_uri}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken auth_url "${auth_url}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken auth_type "${auth_type}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken project_domain_name "${project_domain_name}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken user_domain_name "${user_domain_name}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken project_name "${service_project_name}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken username "${subject_username}"
+    crudini --set /etc/subject/subject-api.conf keystone_authtoken password "${subject_password}"
 
     # rabbit
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_host $rabbit_host
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_port $rabbit_port
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_hosts $rabbit_hosts
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_use_ssl ${rabbit_use_ssl}
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_password ${rabbit_password}
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_virtual_host $rabbit_virtual_host
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_ha_queues ${rabbit_ha_queues}
-    crudini --set /etc/subject/subject.conf oslo_messaging_rabbit heartbeat_rate ${heartbeat_rate}
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_host $rabbit_host
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_port $rabbit_port
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_hosts $rabbit_hosts
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_use_ssl ${rabbit_use_ssl}
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_password ${rabbit_password}
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_virtual_host $rabbit_virtual_host
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit rabbit_ha_queues ${rabbit_ha_queues}
+    crudini --set /etc/subject/subject-api.conf oslo_messaging_rabbit heartbeat_rate ${heartbeat_rate}
 
     #compute
-    crudini --set /etc/subject/subject.conf paste_deploy flavor ${flavor}
+    crudini --set /etc/subject/subject-api.conf paste_deploy flavor ${flavor}
 
 }
 
@@ -139,24 +164,24 @@ main()
     db_init
 
     #keystone中设置subject
-    openstack user show $user --domain default || user create --domain default --password \
-    ${password} $user
+    openstack user show $subject_username --domain default || user create --domain default --password \
+    ${subject_password} $subject_username
     #keystone user-get $admin_user || keystone user-create --name $admin_user \
     #--tenant $admin_tenant_name --pass $admin_password --email "subject@email"
 
-    openstack role add --project $project_name --user $user admin
+    openstack role add --project $service_project_name --user $subject_username admin
 
     openstack service show $subject_service || openstack service create --name \
     $subject_service --description "Ojj Subject" subject
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service public http://controller:9292
+    $subject_service public http://${HOST_IP}:9292
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service internal http://controller:9292
+    $subject_service internal http://${HOST_IP}:9292
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service admin http://controller:9292
+    $subject_service admin http://${HOST_IP}:9292
 
     #keystone user-role-add --user $admin_user --role admin --tenant
     # $admin_tenant_name

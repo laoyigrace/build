@@ -10,7 +10,7 @@ subjectdbname subjectdbuser subjectdbpass bind_host \
 bind_port backlog registry_host registry_port \
 log_dir connection stores default_store filesystem_store_datadir \
 auth_uri auth_url endpointsregion auth_type project_domain_name \
-user_domain_name project_name username password subject_service \
+user_domain_name service_project_name subject_username subject_password subject_service \
 amqp_durable_queues rabbit_host rabbit_port rabbit_hosts \
 rabbit_use_ssl rabbit_password rabbit_virtual_host rabbit_ha_queues \
 heartbeat_rate flavor state_path publicurl adminurl internalurl "
