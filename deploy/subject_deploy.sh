@@ -81,11 +81,13 @@ conf_init()
 
     # keystone
     crudini --set /etc/subject/subject.conf keystone_authtoken auth_uri "${auth_uri}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken identity_uri "${identity_uri}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken admin_password "${admin_password}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken admin_tenant_name "${admin_tenant_name}"
-    crudini --set /etc/subject/subject.conf keystone_authtoken admin_user "${admin_user}"
-
+    crudini --set /etc/subject/subject.conf keystone_authtoken auth_url "${auth_url}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken auth_type "${auth_type}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken project_domain_name "${project_domain_name}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken user_domain_name "${user_domain_name}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken project_name "${project_name}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken username "${username}"
+    crudini --set /etc/subject/subject.conf keystone_authtoken password "${password}"
 
     # rabbit
     crudini --set /etc/subject/subject.conf oslo_messaging_rabbit rabbit_host $rabbit_host
@@ -102,38 +104,6 @@ conf_init()
 
 }
 
-subject_user_init()
-{
-    #生成subject用户
-    getent group subject >/dev/null || groupadd -r subject --gid 1066
-    if ! getent passwd subject >/dev/null; then
-      # Id reservation request: https://bugzilla.redhat.com/923891
-      useradd -u 1066 -r -g subject -G subject,nobody -d /var/lib/subject/ -s /sbin/nologin -c "OpenStack subject Daemons" subject
-    fi
-
-    #加入到sudo中
-    cat <<EOF >/etc/sudoers.d/subject
-Defaults:subject !requiretty
-subject ALL = (root) NOPASSWD: /usr/bin/subject-rootwrap /etc/subject/rootwrap.conf *
-EOF
-
-}
-
-mysql_install()
-{
-    yum install -y mysql-server mysql mysql-devel
-    service mariadb restart
-
-    /usr/bin/mysqladmin -u root password '${mysqldbpassword}'
-    cat << EOF >/root/.my.cnf
-[mysql]
-user=root
-host=localhost
-password='${mysqldbpassword}'
-socket=/var/lib/mysql/mysql.sock
-EOF
-}
-
 db_init()
 {
     #  数据库部署
@@ -142,7 +112,7 @@ db_init()
     echo "CREATE DATABASE IF NOT EXISTS $subjectdbname default character set utf8;"|$mysqlcommand
     echo "GRANT ALL ON $subjectdbname.* TO '$subjectdbuser'@'%' IDENTIFIED BY '$subjectdbpass';"|$mysqlcommand
     echo "GRANT ALL ON $subjectdbname.* TO '$subjectdbuser'@'localhost' IDENTIFIED BY '$subjectdbpass';"|$mysqlcommand
-    echo "GRANT ALL ON $subjectdbname.* TO '$subjectdbuser'@'$subjecthost' IDENTIFIED BY '$subjectdbpass';"|$mysqlcommand
+    echo "GRANT ALL ON $subjectdbname.* TO '$subjectdbuser'@'${HOST_IP}' IDENTIFIED BY '$subjectdbpass';"|$mysqlcommand
 
     subject-manage db sync
 }
@@ -169,19 +139,35 @@ main()
     db_init
 
     #keystone中设置subject
-    keystone user-get $admin_user || keystone user-create --name $admin_user \
-    --tenant $admin_tenant_name --pass $admin_password --email "subject@email"
+    openstack user show $user --domain default || user create --domain default --password \
+    ${password} $user
+    #keystone user-get $admin_user || keystone user-create --name $admin_user \
+    #--tenant $admin_tenant_name --pass $admin_password --email "subject@email"
 
-    keystone user-role-add --user $admin_user --role admin --tenant $admin_tenant_name
-    keystone service-get $subject_service || keystone service-create --name $subject_service --description "OpenStack subject service" --type subject
+    openstack role add --project $project_name --user $user admin
 
-    keystone endpoint-get --service $subject_service || keystone endpoint-create --region $endpointsregion --service $subject_service \
-    --publicurl "${publicurl}" \
-    --adminurl "${adminurl}" \
-    --internalurl "${internalurl}"
+    openstack service show $subject_service || openstack service create --name \
+    $subject_service --description "Ojj Subject" subject
 
-    # 创建image对应关系
-    #jacket --insecure --debug image-mapper-create 66ecc1c0-8367-477b-92c5-1bb09b0bfa89 fc84fa2c-dafd-498a-8246-0692702532c3
+    openstack endpoint create --region $endpointsregion \
+    $subject_service public http://controller:9292
+
+    openstack endpoint create --region $endpointsregion \
+    $subject_service internal http://controller:9292
+
+    openstack endpoint create --region $endpointsregion \
+    $subject_service admin http://controller:9292
+
+    #keystone user-role-add --user $admin_user --role admin --tenant
+    # $admin_tenant_name
+    #keystone service-get $subject_service || keystone service-create --name
+    # $subject_service --description "OpenStack subject service" --type subject
+
+    #keystone endpoint-get --service $subject_service || keystone
+    # endpoint-create --region $endpointsregion --service $subject_service \
+    #--publicurl "${publicurl}" \
+    #--adminurl "${adminurl}" \
+    #--internalurl "${internalurl}"
 
     service ojj-subject-api restart
     service ojj-subject-registry restart
