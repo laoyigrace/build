@@ -124,11 +124,11 @@ rm -fr %{buildroot}%{python2_sitelib}/subjectclient/tests
 
 
 export PYTHONPATH="$( pwd ):$PYTHONPATH"
-sphinx-build -b html doc/source html
+#sphinx-build -b html doc/source html
 
 # generate man page
-sphinx-build -b man doc/source man
-install -p -D -m 644 man/subject.1 %{buildroot}%{_mandir}/man1/subject.1
+#sphinx-build -b man doc/source man
+#install -p -D -m 644 man/subject.1 %{buildroot}%{_mandir}/man1/subject.1
 
 %files -n python2-%{sname}
 %doc README.rst
@@ -136,7 +136,7 @@ install -p -D -m 644 man/subject.1 %{buildroot}%{_mandir}/man1/subject.1
 %{python2_sitelib}/subjectclient
 %{python2_sitelib}/*.egg-info
 %{_sysconfdir}/bash_completion.d
-%{_mandir}/man1/subject.1.gz
+#%{_mandir}/man1/subject.1.gz
 %{_bindir}/subject
 %{_bindir}/subject-2
 %{_bindir}/subject-%{python2_version}
