@@ -6,7 +6,7 @@ set -xe
 
 if [ -e /root/adminrc ]; then
     source /root/adminrc
-elif [ -e /root/keystonerc_admin ]; then
+elif [ -e /root/keystone_adminrc ]; then
     source /root/keystone_adminrc
 fi
 
@@ -174,13 +174,13 @@ main()
     $subject_service --description "Ojj Subject" subject
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service public http://${HOST_IP}:9292
+    $subject_service public http://${HOST_IP}:${bind_port}
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service internal http://${HOST_IP}:9292
+    $subject_service internal http://${HOST_IP}:${bind_port}
 
     openstack endpoint create --region $endpointsregion \
-    $subject_service admin http://${HOST_IP}:9292
+    $subject_service admin http://${HOST_IP}:${bind_port}
 
     #keystone user-role-add --user $admin_user --role admin --tenant
     # $admin_tenant_name
