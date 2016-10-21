@@ -91,6 +91,7 @@ conf_init()
     crudini --set /etc/subject/subject-api.conf DEFAULT registry_host "${registry_host}"
     crudini --set /etc/subject/subject-api.conf DEFAULT registry_port "${registry_port}"
     crudini --set /etc/subject/subject-api.conf DEFAULT log_dir "${log_dir}"
+    crudini --set /etc/subject/subject-api.conf DEFAULT debug "true"
 
 	#subject_store
     crudini --set /etc/subject/subject-api.conf subject_store stores "${stores}"
@@ -161,6 +162,7 @@ main()
     db_init
 
     #keystone中设置subject
+    source /root/keystone_adminrc
     openstack user show $subject_username --domain default || openstack user create --domain default --password \
     ${subject_password} $subject_username
     #keystone user-get $admin_user || keystone user-create --name $admin_user \
