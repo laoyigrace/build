@@ -7,7 +7,7 @@ set -xe
 if [ -e /root/adminrc ]; then
     source /root/adminrc
 elif [ -e /root/keystonerc_admin ]; then
-    source /root/keystonerc_admin
+    source /root/keystone_adminrc
 fi
 
 HOST_IP=`ip addr |grep inet|grep -v 127.0.0.1|grep -v inet6|grep -E "ens|eth"|awk '{print $2}'|tr -d "addr:" | awk -F '/' '{print $1}'`
