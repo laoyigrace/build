@@ -21,9 +21,6 @@ Source1:         ojj-subject-api.service
 Source3:         ojj-subject-registry.service
 Source10:         ojj-subject.logrotate
 
-Source21:         subject-api-dist.conf
-Source24:         subject-registry-dist.conf
-
 BuildArch:        noarch
 BuildRequires:    python2-devel
 BuildRequires:    python-setuptools
@@ -174,8 +171,7 @@ install -d -m 755 %{buildroot}%{_sysconfdir}/subject/metadefs
 
 # Config file
 install -p -D -m 640 etc/subject-api.conf %{buildroot}%{_sysconfdir}/subject/subject-api.conf
-install -p -D -m 644 %{SOURCE21} %{buildroot}%{_datadir}/subject/subject-api-dist.conf
-install -p -D -m 644 etc/subject-api-paste.ini %{buildroot}%{_datadir}/subject/subject-api-dist-paste.ini
+install -p -D -m 644 etc/subject-api-paste.ini %{buildroot}%{_sysconfdir}/subject/subject-api-paste.ini
 ##
 #install -p -D -m 640 etc/subject-cache.conf %{buildroot}%{_sysconfdir}/subject/subject-cache.conf
 #install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datadir}/subject/subject-cache-dist.conf
@@ -185,8 +181,7 @@ install -p -D -m 644 etc/subject-api-paste.ini %{buildroot}%{_datadir}/subject/s
 #install -p -D -m 644 etc/subject-glare-paste.ini %{buildroot}%{_datadir}/subject/subject-glare-dist-paste.ini
 ##
 install -p -D -m 640 etc/subject-registry.conf %{buildroot}%{_sysconfdir}/subject/subject-registry.conf
-install -p -D -m 644 %{SOURCE24} %{buildroot}%{_datadir}/subject/subject-registry-dist.conf
-install -p -D -m 644 etc/subject-registry-paste.ini %{buildroot}%{_datadir}/subject/subject-registry-dist-paste.ini
+install -p -D -m 644 etc/subject-registry-paste.ini %{buildroot}%{_sysconfdir}/subject/subject-registry-paste.ini
 ##
 #install -p -D -m 640 etc/subject-scrubber.conf %{buildroot}%{_sysconfdir}/subject/subject-scrubber.conf
 #install -p -D -m 644 %{SOURCE25} %{buildroot}%{_datadir}/subject/subject-scrubber-dist.conf
@@ -264,14 +259,10 @@ exit 0
 #%{_bindir}/subject-scrubber
 #%{_bindir}/subject-replicator
 
-%{_datadir}/subject/subject-api-dist.conf
 #%{_datadir}/subject/subject-cache-dist.conf
 #%{_datadir}/subject/subject-glare-dist.conf
-%{_datadir}/subject/subject-registry-dist.conf
 #%{_datadir}/subject/subject-scrubber-dist.conf
-%{_datadir}/subject/subject-api-dist-paste.ini
 #%{_datadir}/subject/subject-glare-dist-paste.ini
-%{_datadir}/subject/subject-registry-dist-paste.ini
 
 %{_unitdir}/ojj-subject-api.service
 #%{_unitdir}/ojj-subject-glare.service
@@ -283,6 +274,8 @@ exit 0
 #%endif
 %dir %{_sysconfdir}/subject
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-api.conf
+%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-api-paste.ini
+%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-registry-paste.ini
 #%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-glare.conf
 #%config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-cache.conf
 %config(noreplace) %attr(-, root, subject) %{_sysconfdir}/subject/subject-registry.conf
