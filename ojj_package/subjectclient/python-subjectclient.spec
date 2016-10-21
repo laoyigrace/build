@@ -1,4 +1,7 @@
 %{!?upstream_version: %global upstream_version %{version}%{?milestone}}
+%{!?__python2: %global __python2 /usr/bin/python2}
+%{!?py2_build: %global py2_build %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} build --executable="%{__python2} -s"}}
+%{!?py2_install: %global py2_install %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot}}}
 
 %global sname subjectclient
 
