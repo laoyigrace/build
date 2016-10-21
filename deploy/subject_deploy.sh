@@ -161,7 +161,7 @@ main()
     db_init
 
     #keystone中设置subject
-    openstack user show $subject_username --domain default || user create --domain default --password \
+    openstack user show $subject_username --domain default || openstack user create --domain default --password \
     ${subject_password} $subject_username
     #keystone user-get $admin_user || keystone user-create --name $admin_user \
     #--tenant $admin_tenant_name --pass $admin_password --email "subject@email"
