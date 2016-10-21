@@ -154,7 +154,7 @@ export PYTHONPATH="$( pwd ):$PYTHONPATH"
 %endif
 
 %files doc
-%doc html
+#%doc html
 %license LICENSE
 
 %changelog
